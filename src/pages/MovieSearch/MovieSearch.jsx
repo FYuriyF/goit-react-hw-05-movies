@@ -1,18 +1,16 @@
-import { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import * as API from '../../services/fetchMoviesApi';
 import MoviesList from '../../components/MovieList/MovieList';
-import css from './MovieSearch.module.css';
+import SearchForm from '../../components/SearchForm';
 
 const MovieSearch = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const query = searchParams.get('query') ?? '';
-
   const [movies, setMovie] = useState(null);
   const [totalRezultMovie, setTotalRezMovie] = useState(null);
-  const [inputSearch, setInputSearch] = useState(query);
 
   useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const query = searchParams.get('query') ?? '';
+
     if (query === '') return;
 
     setMovie(null);
@@ -24,37 +22,28 @@ const MovieSearch = () => {
         setTotalRezMovie(data.total_results);
       })
       .catch(console.log);
-  }, [query]);
+  }, []);
 
-  const handleInputChange = e => {
-    setInputSearch(e.currentTarget.value);
-  };
+  const handleSubmit = () => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const query = searchParams.get('query') ?? '';
 
-  const handleSubmit = e => {
-    e.preventDefault();
-    const form = e.target;
-    const queryNormalized = form.query.value.toLowerCase().trim();
+    if (query === '') return;
 
-    setSearchParams({ query: queryNormalized });
-    // form.reset();
+    setMovie(null);
+    setTotalRezMovie(null);
+
+    API.getMoviesQuery(query)
+      .then(data => {
+        setMovie(data.results);
+        setTotalRezMovie(data.total_results);
+      })
+      .catch(console.log);
   };
 
   return (
     <>
-      <form onSubmit={handleSubmit} className={css.form}>
-        <input
-          type="text"
-          name="query"
-          className={css.input}
-          value={inputSearch}
-          onChange={handleInputChange}
-          placeholder="Enter movie name"
-        />
-
-        <button type="submit" className={css.submit}>
-          Search
-        </button>
-      </form>
+      <SearchForm handleSubmit={handleSubmit} />
 
       {movies && <MoviesList movies={movies} />}
 

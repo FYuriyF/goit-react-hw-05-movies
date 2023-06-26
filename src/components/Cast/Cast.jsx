@@ -4,8 +4,11 @@ import * as API from '../../services/fetchMoviesApi';
 import css from './Cast.module.css';
 
 const Cast = () => {
-  const [Cast, setCastMovie] = useState(null);
+  const [cast, setCastMovie] = useState(null);
   const { movieId } = useParams();
+
+  const imgNotFound =
+    'https://user-images.githubusercontent.com/24848110/33519396-7e56363c-d79d-11e7-969b-09782f5ccbab.png';
 
   useEffect(() => {
     API.getMovieCast(movieId)
@@ -13,26 +16,27 @@ const Cast = () => {
       .catch(console.log);
   }, [movieId]);
 
-  if (!Cast) {
-    return;
+  if (!cast) {
+    return null;
   }
 
   return (
     <>
-      {Cast.length > 0 ? (
+      {cast && cast.length > 0 ? (
         <ul>
-          {Cast.slice(0, 19).map(({ id, name, character, profile_path }) => (
+          {cast.slice(0, 19).map(({ id, name, character, profile_path }) => (
             <li key={id} className={css.item}>
-              {profile_path ? (
-                <img
-                  src={`https://image.tmdb.org/t/p/w500${profile_path}`}
-                  alt={name}
-                  className={css.img}
-                  width="100"
-                />
-              ) : (
-                <div className={css.imgNotFound}>Image not found</div>
-              )}
+              <img
+                src={
+                  profile_path
+                    ? `https://image.tmdb.org/t/p/w500${profile_path}`
+                    : imgNotFound
+                }
+                alt={name}
+                className={css.img}
+                width="100"
+              />
+
               <div>
                 <p>
                   <b>{name}</b>
