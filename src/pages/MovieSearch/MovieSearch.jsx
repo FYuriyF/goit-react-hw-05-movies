@@ -10,7 +10,6 @@ const MovieSearch = () => {
 
   const [movies, setMovie] = useState(null);
   const [totalRezultMovie, setTotalRezMovie] = useState(null);
-  const [inputSearch, setInputSearch] = useState(query);
 
   useEffect(() => {
     if (query === '') return;
@@ -26,21 +25,13 @@ const MovieSearch = () => {
       .catch(console.log);
   }, [query]);
 
-  const handleInputChange = e => {
-    setInputSearch(e.currentTarget.value);
-  };
-
-  const handleSubmit = () => {
+  const handleSubmit = inputSearch => {
     setSearchParams({ query: inputSearch.toLowerCase().trim() });
   };
 
   return (
     <>
-      <SearchForm
-        handleSubmit={handleSubmit}
-        inputSearch={inputSearch}
-        handleInputChange={handleInputChange}
-      />
+      <SearchForm handleSubmit={handleSubmit} />
 
       {movies && <MoviesList movies={movies} />}
 

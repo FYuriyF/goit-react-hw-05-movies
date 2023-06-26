@@ -2,8 +2,13 @@ import { useState } from 'react';
 
 import css from './SearchForm.module.css';
 
-const SearchForm = ({ handleSubmit, inputSearch, handleInputChange }) => {
+const SearchForm = ({ handleSubmit }) => {
+  const [inputSearch, setInputSearch] = useState('');
   const [error, setError] = useState(false);
+
+  const handleInputChange = e => {
+    setInputSearch(e.currentTarget.value);
+  };
 
   const onSubmit = e => {
     e.preventDefault();
@@ -14,7 +19,7 @@ const SearchForm = ({ handleSubmit, inputSearch, handleInputChange }) => {
     }
 
     setError(false);
-    handleSubmit();
+    handleSubmit(inputSearch);
   };
 
   return (
