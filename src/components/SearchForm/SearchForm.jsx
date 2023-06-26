@@ -1,9 +1,20 @@
-import css from '../pages/MovieSearch/MovieSearch.module.css';
+import { useState } from 'react';
+
+import css from './SearchForm.module.css';
 
 const SearchForm = ({ handleSubmit, inputSearch, handleInputChange }) => {
+  const [error, setError] = useState(false);
+
   const onSubmit = e => {
     e.preventDefault();
-    handleSubmit(e);
+
+    if (inputSearch.trim() === '') {
+      setError(true);
+      return;
+    }
+
+    setError(false);
+    handleSubmit();
   };
 
   return (
@@ -20,6 +31,8 @@ const SearchForm = ({ handleSubmit, inputSearch, handleInputChange }) => {
       <button type="submit" className={css.submit}>
         Search
       </button>
+
+      {error && <div className={css.error}>Please enter a movie name</div>}
     </form>
   );
 };

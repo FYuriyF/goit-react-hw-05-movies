@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import * as API from '../../services/fetchMoviesApi';
 import MoviesList from '../../components/MovieList/MovieList';
-import SearchForm from '../../components/SearchForm';
+import SearchForm from '../../components/SearchForm/SearchForm';
 
 const MovieSearch = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -30,14 +30,8 @@ const MovieSearch = () => {
     setInputSearch(e.currentTarget.value);
   };
 
-  const handleSubmit = e => {
-    e.preventDefault();
-    const form = e.target;
-    const queryNormalized = form.query.value.toLowerCase().trim();
-
-    if (queryNormalized === '') return;
-
-    setSearchParams({ query: queryNormalized });
+  const handleSubmit = () => {
+    setSearchParams({ query: inputSearch.toLowerCase().trim() });
   };
 
   return (
