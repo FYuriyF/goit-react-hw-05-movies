@@ -1,24 +1,9 @@
-import { useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
 import css from '../pages/MovieSearch/MovieSearch.module.css';
 
-const SearchForm = ({ handleSubmit }) => {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const query = searchParams.get('query') ?? '';
-  const [inputSearch, setInputSearch] = useState(query);
-
-  const handleInputChange = e => {
-    setInputSearch(e.currentTarget.value);
-  };
-
+const SearchForm = ({ handleSubmit, inputSearch, handleInputChange }) => {
   const onSubmit = e => {
     e.preventDefault();
-    const form = e.target;
-    const queryNormalized = form.query.value.toLowerCase().trim();
-
-    setSearchParams({ query: queryNormalized });
-    // form.reset();
-    handleSubmit();
+    handleSubmit(e);
   };
 
   return (

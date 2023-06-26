@@ -1,16 +1,18 @@
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import * as API from '../../services/fetchMoviesApi';
 import MoviesList from '../../components/MovieList/MovieList';
 import SearchForm from '../../components/SearchForm';
 
 const MovieSearch = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const query = searchParams.get('query') ?? '';
+
   const [movies, setMovie] = useState(null);
   const [totalRezultMovie, setTotalRezMovie] = useState(null);
+  const [inputSearch, setInputSearch] = useState(query);
 
   useEffect(() => {
-    const searchParams = new URLSearchParams(window.location.search);
-    const query = searchParams.get('query') ?? '';
-
     if (query === '') return;
 
     setMovie(null);
@@ -22,28 +24,29 @@ const MovieSearch = () => {
         setTotalRezMovie(data.total_results);
       })
       .catch(console.log);
-  }, []);
+  }, [query]);
 
-  const handleSubmit = () => {
-    const searchParams = new URLSearchParams(window.location.search);
-    const query = searchParams.get('query') ?? '';
+  const handleInputChange = e => {
+    setInputSearch(e.currentTarget.value);
+  };
 
-    if (query === '') return;
+  const handleSubmit = e => {
+    e.preventDefault();
+    const form = e.target;
+    const queryNormalized = form.query.value.toLowerCase().trim();
 
-    setMovie(null);
-    setTotalRezMovie(null);
+    if (queryNormalized === '') return;
 
-    API.getMoviesQuery(query)
-      .then(data => {
-        setMovie(data.results);
-        setTotalRezMovie(data.total_results);
-      })
-      .catch(console.log);
+    setSearchParams({ query: queryNormalized });
   };
 
   return (
     <>
-      <SearchForm handleSubmit={handleSubmit} />
+      <SearchForm
+        handleSubmit={handleSubmit}
+        inputSearch={inputSearch}
+        handleInputChange={handleInputChange}
+      />
 
       {movies && <MoviesList movies={movies} />}
 
